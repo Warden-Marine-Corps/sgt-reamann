@@ -1,0 +1,27 @@
+{
+    "user": [
+        {
+            "id": 552929239490494474,
+            "name": "mimags",
+            "report_entries": [
+                {
+                    "timestamp_utc": 1761327423,
+                    "rank_id": 1208148880483549184,
+                    "rank_name": "First Lieutenant\u2800\u2800\u2800\u2800\u2800\u2800",
+                    "security_clearence_id": 1211113854046572584,
+                    "security_clearence_name": "High Security\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800",
+                    "msg": "msg"
+                },
+                {
+                    "timestamp_utc": 1761327518,
+                    "rank_id": 1208148880483549184,
+                    "rank_name": "First Lieutenant\u2800\u2800\u2800\u2800\u2800\u2800",
+                    "security_clearence_id": 1211113854046572584,
+                    "security_clearence_name": "High Security\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800",
+                    "msg": "msg"
+                }
+            ],
+            "discipline_entries": []
+        }
+    ]
+}

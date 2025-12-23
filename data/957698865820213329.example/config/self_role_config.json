@@ -1,0 +1,130 @@
+[{
+    "message":"Choose Your Ping Reactions",
+    "roles": [
+    {
+        "role_id": 1202066354338021426,
+        "name": "QRF",
+        "emoji":"🛡️"
+    },
+    {
+        "role_id": 1371272401341517965,
+        "name": "Rare metal QRF",
+        "emoji": 1371933595169722468
+    },
+    {
+        "role_id": 968994446752497734,
+        "name": "Infantry",
+        "emoji":"🔫"
+    },
+    {
+        "role_id": 968994667209302086,
+        "name": "Mechanized",
+        "emoji": "🚜"
+    },
+    {
+        "role_id": 1202342155407085699,
+        "name": "Tank",
+        "emoji": 1362250516440023110
+    },  
+    {
+        "role_id": 1210372662220685382,
+        "name": "Sailor",
+        "emoji": "⛵"
+    },
+    {
+        "role_id": 968993890831040592,
+        "name": "Artillery",
+        "emoji":"🤯"
+    },
+    {
+        "role_id": 968994865922846740,
+        "name": "Partisan",
+        "emoji":"🥷"
+    },
+    {
+        "role_id": 968994524657504346,
+        "name": "Logistics",
+        "emoji": 1362247414236319874
+    },
+    {
+        "role_id": 1187455001346453514,
+        "name": "Facility",
+        "emoji":"🏭"
+    },
+    {
+        "role_id": 968997533495992320,
+        "name": "Engineer",
+        "emoji":"🛠️"
+    } 
+]
+},
+{
+    "message":"Set your Active Status",
+    "roles":[{
+        "role_id": 1195151356395262094,
+        "name": "Active",
+        "emoji": 1362251086961840218
+    },
+    {
+        "role_id": 1195152406653194381,
+        "name": "Inactive",
+        "emoji": 1362258674910757046
+    }]   
+
+},
+{
+    "message":"Other Games",
+    "roles":[{
+        "role_id": 1419061334477111306,
+        "name": "Squad",
+        "emoji": "🔫"
+    },
+    {
+        "role_id": 1419061360498573413,
+        "name": "War thunder ",
+        "emoji": "🛩️"
+    },
+    {
+        "role_id": 1419061269981565029,
+        "name": "Hoi4",
+        "emoji": "🗿"
+    },
+    {
+        "role_id": 1419612278281601124,
+        "name": "vintage story",
+        "emoji": "🗺️"
+    },
+    {
+        "role_id": 1419730920289603664,
+        "name": "Space Engineers",
+        "emoji": "🚀"
+    },
+    {
+        "role_id": 1419065890502086767,
+        "name": "Helldivers 2",
+        "emoji": "🪖"
+    },
+    {
+        "role_id": 1421467361831030794,
+        "name": "DayZ",
+        "emoji": 1359663967722537116
+    },
+    {
+        "role_id": 1421467460179071007,
+        "name": "Rust",
+        "emoji": 978996167843119154
+    }]
+},{
+    "message":"Suck my dick",
+    "roles":[{
+        "role_id": 1195151356395262094,
+        "name": "Active",
+        "emoji": 1362251086961840218
+    },
+    {
+        "role_id": 1195152406653194381,
+        "name": "Inactive",
+        "emoji": 1362258674910757046
+    }]   
+
+}]

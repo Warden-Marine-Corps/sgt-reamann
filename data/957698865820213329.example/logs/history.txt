@@ -1,0 +1,30 @@
+[2025-04-17 05:44 UTC] AI reply to Arl Quantum 4.0: was geht alter -> [No response, I'm not taking orders from anyone below Master Gunner Sergeant]
+[2025-04-17 05:45 UTC] AI reply to Arl Quantum 4.0: was geht alter -> WHAT DID I JUST HEAR, MAGGOT?! YOU'RE ASKING ME WHAT'S OLD WHEN YOU'RE THE ONE WHO'S SUPPOSED TO BE GIVING ORDERS! YOU'RE A MASTER GUNNER SERGEANT, NOT SOME YOUNG RECRUIT TRYING TO MAKE SMALL TALK ON DECK! SPEAK LIKE AN OFFICER, ARL QUANTUM 4.0!
+[2025-04-20 20:40 UTC] Sent welcome message to Yourself.
+[2025-04-20 20:40 UTC] Sent welcome message to Yourself in #🚢landing-ship🚢.
+[2025-04-20 20:40 UTC] Assigned role '⠀⠀⠀⠀⠀⠀⠀Rank⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Yourself.
+[2025-04-20 20:40 UTC] Assigned role '⠀⠀⠀Permission Ranks⠀⠀⠀⠀⠀' to Yourself.
+[2025-04-20 20:40 UTC] Assigned role 'Not Verified⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Yourself.
+[2025-04-20 20:40 UTC] Assigned role 'Not Verified⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Yourself.
+[2025-04-20 20:40 UTC] Assigned role '⠀⠀⠀⠀⠀Vanity Role⠀⠀⠀⠀⠀⠀⠀' to Yourself.
+[2025-04-20 20:40 UTC] Assigned role '⠀⠀⠀⠀⠀Professions⠀⠀⠀⠀⠀⠀⠀' to Yourself.
+[2025-04-20 20:40 UTC] Assigned role '⠀⠀⠀⠀⠀Activity⠀⠀⠀⠀⠀⠀⠀' to Yourself.
+[2025-04-20 22:05 UTC] Sent welcome message to Agent.
+[2025-04-20 22:05 UTC] Sent welcome message to Agent in #🚢landing-ship🚢.
+[2025-04-20 22:05 UTC] Assigned role '⠀⠀⠀⠀⠀⠀⠀Rank⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Agent.
+[2025-04-20 22:05 UTC] Assigned role '⠀⠀⠀Permission Ranks⠀⠀⠀⠀⠀' to Agent.
+[2025-04-20 22:05 UTC] Assigned role 'Not Verified⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Agent.
+[2025-04-20 22:05 UTC] Assigned role 'Not Verified⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Agent.
+[2025-04-20 22:05 UTC] Assigned role '⠀⠀⠀⠀⠀Vanity Role⠀⠀⠀⠀⠀⠀⠀' to Agent.
+[2025-04-20 22:05 UTC] Assigned role '⠀⠀⠀⠀⠀Professions⠀⠀⠀⠀⠀⠀⠀' to Agent.
+[2025-04-20 22:05 UTC] Assigned role '⠀⠀⠀⠀⠀Activity⠀⠀⠀⠀⠀⠀⠀' to Agent.
+[2025-04-20 23:37 UTC] Sent welcome message to Rubilux.
+[2025-04-20 23:37 UTC] Sent welcome message to Rubilux in #🚢landing-ship🚢.
+[2025-04-20 23:37 UTC] Assigned role '⠀⠀⠀⠀⠀⠀⠀Rank⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Rubilux.
+[2025-04-20 23:37 UTC] Assigned role '⠀⠀⠀Permission Ranks⠀⠀⠀⠀⠀' to Rubilux.
+[2025-04-20 23:37 UTC] Assigned role 'Not Verified⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Rubilux.
+[2025-04-20 23:37 UTC] Assigned role 'Not Verified⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀' to Rubilux.
+[2025-04-20 23:37 UTC] Assigned role '⠀⠀⠀⠀⠀Vanity Role⠀⠀⠀⠀⠀⠀⠀' to Rubilux.
+[2025-04-20 23:37 UTC] Assigned role '⠀⠀⠀⠀⠀Professions⠀⠀⠀⠀⠀⠀⠀' to Rubilux.
+[2025-04-20 23:37 UTC] Assigned role '⠀⠀⠀⠀⠀Activity⠀⠀⠀⠀⠀⠀⠀' to Rubilux.
+[2025-04-20 23:37 UTC] This is a example log
