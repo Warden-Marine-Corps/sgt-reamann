@@ -1,14 +1,18 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from utils.ticket_utils import log_ticket_event, load_ticket_config, write_transcript
-from utils.llama_utils import chat_with_ai
-from utils.discord_utils import get_user_rank
 import time
 import datetime
+
+#our utils imports
+from utils.ticket_db import log_ticket_event, load_ticket_config, write_transcript
+from utils.llama_utils import chat_with_ai
+from utils.discord_utils import get_user_rank
+from data.ticket_config import TicketConfig
+
+#logger
 import logging
 logger = logging.getLogger(__name__)
-
 
 async def make_transcript(interaction: discord.Interaction):
     messages = []
@@ -38,9 +42,9 @@ class ReopenTicketButton(discord.ui.Button):
         super().__init__(label="Reopen Ticket", style=discord.ButtonStyle.primary, custom_id="reopen_ticket")
 
     async def callback(self, interaction: discord.Interaction):
-        config = load_ticket_config(interaction.guild.id)
-        ticket_category = discord.utils.get(interaction.guild.categories, id=config["ticket_category_id"])
-        support_role = interaction.guild.get_role(config["support_role_id"])
+        config: TicketConfig = await load_ticket_config(interaction.guild.id)
+        ticket_category = discord.utils.get(interaction.guild.categories, id=config.ticket_category_id)
+        support_role = interaction.guild.get_role(config.support_role_id)
 
         if not ticket_category:
             await interaction.response.send_message("❌ Active ticket category not found!", ephemeral=True)
@@ -62,7 +66,7 @@ class ReopenTicketButton(discord.ui.Button):
         await interaction.message.edit(view=view)
 
         log_ticket_event(interaction.guild.id, f"Ticket reopened in {interaction.channel.name} by {interaction.user}")
-        log_channel = interaction.guild.get_channel(config["log_channel_id"])
+        log_channel = interaction.guild.get_channel(config.log_channel_id)
         if log_channel:
             await log_channel.send(f"♻️ Ticket reopened: {interaction.channel.name} by {interaction.user.mention}")
 
@@ -73,6 +77,8 @@ class DeleteTicketButton(discord.ui.Button):
         super().__init__(label="Delete Ticket", style=discord.ButtonStyle.danger, custom_id="delete_ticket")
 
     async def callback(self, interaction: discord.Interaction):
+        config: TicketConfig = await load_ticket_config(interaction.guild.id)
+
         # Check if user is an admin
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message("❌ Only admins can delete tickets!", ephemeral=True)
@@ -82,7 +88,7 @@ class DeleteTicketButton(discord.ui.Button):
         
         await interaction.channel.delete()
         log_ticket_event(interaction.guild.id, f"Ticket deleted: {interaction.channel.name} by {interaction.user}")
-        log_channel = interaction.guild.get_channel(load_ticket_config(interaction.guild.id)["log_channel_id"])
+        log_channel = interaction.guild.get_channel(config.log_channel_id)
         if log_channel:
             await log_channel.send(f"🗑️ Ticket deleted: {interaction.channel.name} by {interaction.user.mention}")
         
@@ -95,9 +101,9 @@ class CloseTicketButton(discord.ui.Button):
         super().__init__(label="Close Ticket", style=discord.ButtonStyle.danger, custom_id="close_ticket")
 
     async def callback(self, interaction: discord.Interaction):
-        config = load_ticket_config(interaction.guild.id)
-        closed_category = discord.utils.get(interaction.guild.categories, id=config["closed_category_id"])
-        support_role = interaction.guild.get_role(config["support_role_id"])
+        config = await load_ticket_config(interaction.guild.id)
+        closed_category = discord.utils.get(interaction.guild.categories, id=config.closed_category_id)
+        support_role = interaction.guild.get_role(config.support_role_id)
 
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
@@ -119,7 +125,7 @@ class CloseTicketButton(discord.ui.Button):
             await interaction.message.edit(view=view)  # Update the message without the Close Ticket button
 
             log_ticket_event(interaction.guild.id, f"Ticket closed in {interaction.channel.name} by {interaction.user}")
-            log_channel = interaction.guild.get_channel(config["log_channel_id"])
+            log_channel = interaction.guild.get_channel(config.log_channel_id)
             if log_channel:
                 await log_channel.send(f"📌 Ticket closed: {interaction.channel.name} by {interaction.user.mention}")
 
@@ -154,10 +160,10 @@ class TicketDropdown(discord.ui.Select):
         super().__init__(placeholder="Choose your ticket reason...", options=options, custom_id="ticket_reason")
 
     async def callback(self, interaction: discord.Interaction):
-        config = load_ticket_config(interaction.guild.id)
+        config = await load_ticket_config(interaction.guild.id)
         reason = self.values[0]
-        category = discord.utils.get(interaction.guild.categories, id=config["ticket_category_id"])
-        support_role = interaction.guild.get_role(config["support_role_id"])
+        category = discord.utils.get(interaction.guild.categories, id=config.ticket_category_id)
+        support_role = interaction.guild.get_role(config.support_role_id)
 
         if (support_role is None):
             await interaction.response.send_message("No Supporter Role")
@@ -207,7 +213,7 @@ class TicketDropdown(discord.ui.Select):
         
 
         log_ticket_event(channel.guild.id,f"Ticket opened by {interaction.user} for {reason} in {channel.name}")
-        log_channel = interaction.guild.get_channel(config["log_channel_id"])
+        log_channel = interaction.guild.get_channel(config.log_channel_id)
         if log_channel:
             await log_channel.send(f"📨 Ticket opened by {interaction.user.mention} for **{reason}**: {channel.mention}")
 

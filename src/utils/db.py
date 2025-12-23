@@ -1,7 +1,7 @@
 import aiomysql
 import datetime
 import os
-from typing import AsyncGenerator, List, Tuple
+from typing import List, Tuple
 from data.event import Event
 
 
@@ -11,16 +11,16 @@ logger = logging.getLogger(__name__)
 
 async def init_db_pool():
     pool : aiomysql.Pool = await aiomysql.create_pool(
-        host=os.getenv("DATABASE_HOST", "manfraed.de"),
+        host=os.getenv("DATABASE_HOST", "localhost"),
         port=int(os.getenv("DATABASE_PORT", 3306)),
-        user=os.getenv("DATABASE_USER"),
-        password=os.getenv("DATABASE_PASSWORD"),
-        db=os.getenv("DATABASE_NAME"),
+        user=os.getenv("DATABASE_USER", "root"),
+        password=os.getenv("DATABASE_PASSWORD", None),
+        db=os.getenv("DATABASE_NAME", "db_reamann"),
         minsize=1,   # minimale Anzahl Verbindungen
         maxsize=10,   # maximale Anzahl Verbindungen
         autocommit=True
     )
-    logger.info("Connected to Manfraed DB!")
+    logger.info("Connected to {host} DB!")
     return pool
 
 async def save_event(pool : aiomysql.Pool, event: Event) -> int:

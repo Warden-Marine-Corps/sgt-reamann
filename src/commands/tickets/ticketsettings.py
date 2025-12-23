@@ -1,7 +1,10 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils.ticket_utils import load_ticket_config, save_ticket_config
+
+#our utils imports
+from data.ticket_config import TicketConfig
+from utils.ticket_db import load_ticket_config, save_ticket_config
 
 #special IDs:
 # all IDs need to be transvered to discord as string so we chekc them as string sbut load them as int
@@ -38,12 +41,12 @@ class RoleSearchModal(discord.ui.Modal, title="Rollen filtern"):
 
 class SupportRoleSelect(discord.ui.Select):
     """Makes the Dropdown Select for the Support Role Ping needs roles: list[22] :discord.Roles"""
-    def __init__(self, roles : list[discord.Role], parent_view, query = None, config = None):
+    def __init__(self, roles : list[discord.Role], parent_view, query = None, config: TicketConfig = None):
         self.parent_view = parent_view
         self.query = query
         self.roles : list[discord.Role] = roles #liste mit allen roles auf dem guild salfe the roles list to regenerate the dorpdown # Speichere die Rollenliste für später
         if (config != None):
-            self.selected_role_id = str(config["support_role_id"])
+            self.selected_role_id = str(config.support_role_id)
         else:
             self.selected_role_id = None
 
@@ -123,12 +126,12 @@ class CategorySearchModal(discord.ui.Modal, title="Category Searching"):
 
 class TicketCategorySelect(discord.ui.Select):
     """Makes the Dropdown Select for the   needs  categories: list[23]"""
-    def __init__(self, categories: list[discord.CategoryChannel], parent_view, query = None, config = None):
+    def __init__(self, categories: list[discord.CategoryChannel], parent_view, query = None, config: TicketConfig = None):
         self.parent_view = parent_view
         self.query = query
         self.categories : list[discord.CategoryChannel] = categories #salfe the categories list to regenerate the dorpdown
         if (config != None):
-            self.selected_categories_id = str(config["ticket_category_id"])
+            self.selected_categories_id = str(config.ticket_category_id)
         else:
             self.selected_categories_id = None
 
@@ -172,12 +175,12 @@ class TicketCategorySelect(discord.ui.Select):
 
 class ClosedCategorySelect(discord.ui.Select):
     """Makes the Dropdown Select for the Closed Category needs  categories: list[23]"""
-    def __init__(self, categories: list[discord.CategoryChannel], parent_view, query = None, config = None):
+    def __init__(self, categories: list[discord.CategoryChannel], parent_view, query = None, config: TicketConfig = None):
         self.parent_view = parent_view
         self.query = query
         self.categories : list[discord.CategoryChannel] = categories #salfe the categories list to regenerate the dorpdown
         if ( config != None):
-            self.selected_categories_id = str(config["closed_category_id"])
+            self.selected_categories_id = str(config.closed_category_id)
         else:
             self.selected_categories_id = None
 
@@ -247,12 +250,12 @@ class LogChannelModal(discord.ui.Modal, title="LogChannel filtern"):
 
 class LogChannelSelect(discord.ui.Select):
     """Makes the Dropdown Select for the LogChannel needs channel: list[22] :discord.Text_channel"""
-    def __init__(self, channels, parent_view, query = None, config = None):
+    def __init__(self, channels, parent_view, query = None, config: TicketConfig = None):
         self.parent_view = parent_view
         self.query = query
         self.channels = channels #salfe the channels list to regenerate the dorpdown
         if (config != None):
-            self.selected_chan_id = str(config["log_channel_id"])#
+            self.selected_chan_id = str(config.log_channel_id)
         else:
             self.selected_chan_id = None
 
@@ -300,7 +303,7 @@ class LogChannelSelect(discord.ui.Select):
 class SettingsView(discord.ui.View):
     """View to update ticket settings with dropdown option."""
 
-    def __init__(self, config, roles: list[discord.Role], categories, channels):
+    def __init__(self, config: TicketConfig, roles: list[discord.Role], categories, channels):
         super().__init__(timeout=300)
 
         # # Element aus config nach oben schieben (falls vorhanden)
@@ -384,16 +387,16 @@ class SettingsView(discord.ui.View):
             logChannel = logChannel.id
         
         try:
-            config = {
-                "support_role_id": roleSelected.id,
-                "ticket_category_id": catSelected.id,
-                "closed_category_id": catSelectedClosed.id,
-                "log_channel_id": logChannel
-            }
-            save_ticket_config(interaction.guild_id, config)
+            config = TicketConfig(
+                support_role_id = roleSelected.id,
+                ticket_category_id = catSelected.id,
+                closed_category_id = catSelectedClosed.id,
+                log_channel_id = logChannel
+            )
+            await save_ticket_config(interaction.guild_id, config)
             await interaction.response.send_message("✅ Ticket settings updated.", ephemeral=True)
         except:
-            await interaction.response.send_message("❌ Faild Saving Ticket settings.", ephemeral=True)
+            await interaction.response.send_message("❌ Failed Saving Ticket settings.", ephemeral=True)
 
 class TicketSettings(commands.Cog):
     """Command to open the settings modal with pre-loaded values."""
@@ -409,7 +412,7 @@ class TicketSettings(commands.Cog):
             return
 
         # Load current configuration
-        config = load_ticket_config(interaction.guild_id)
+        config = await load_ticket_config(interaction.guild_id)
 
         # Gather guild data
         roles : list[discord.Role] = [role for role in interaction.guild.roles if not role.is_default()]

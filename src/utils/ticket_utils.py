@@ -6,6 +6,7 @@ DATA = "./data"
 TC = "config/ticket_config.json"
 LOG_FILE = "logs/tickets.txt"
 
+raise DeprecationWarning("ticket_utils.py is deprecated, use ticket_db.py for DB operations and manage configs/logs accordingly.")
 
 def write_transcript(guild_id,filename,text):
     filename = os.path.join(DATA,str(guild_id),"transcripts",filename)

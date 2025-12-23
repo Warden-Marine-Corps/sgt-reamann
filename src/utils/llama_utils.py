@@ -50,9 +50,14 @@ That means, the highest rank in the regiment is "general", and the lowest is "pr
 ]
 
 async def chat_with_ai(messages):
-    response = await asyncio.to_thread(ollama.chat, model='llama3.2', messages=messages)
-    logger.debug(response)
-    return response.message.content
+    try:
+        response = await asyncio.to_thread(ollama.chat, model='llama3.2', messages=messages)
+        logger.debug(response)
+        return response.message.content
+    except:
+        logger.exception("Error during Ollama chat call")
+        return "Yoo Mama i Don't know whats going on!"
+
 
 async def chat_with_memory_ai(user_input, name, rank="Private"):
     # Append the user input to the conversation history

@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from utils.ticket_utils import log_ticket_event, load_ticket_config
+from utils.ticket_db import log_ticket_event, load_ticket_config
 from commands.tickets.create_panel import TranscriptButton, ReopenTicketButton, DeleteTicketButton, make_transcript
 
 class CloseTicket(commands.Cog):
@@ -10,14 +10,14 @@ class CloseTicket(commands.Cog):
 
     @app_commands.command(name="closeticket", description="Close the current ticket.")
     async def closeticket(self, interaction: discord.Interaction):
-        config = load_ticket_config(interaction.guild.id)
+        config = await load_ticket_config(interaction.guild.id)
 
-        if not interaction.channel.category_id == config["ticket_category_id"]:
+        if not interaction.channel.category_id == config.ticket_category_id:
             await interaction.response.send_message("This command must be used in a ticket channel.", ephemeral=True)
             return
 
-        closed_category = discord.utils.get(interaction.guild.categories, id=config["closed_category_id"])
-        support_role = interaction.guild.get_role(config["support_role_id"])
+        closed_category = discord.utils.get(interaction.guild.categories, id=config.closed_category_id)
+        support_role = interaction.guild.get_role(config.support_role_id)
 
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
@@ -46,7 +46,7 @@ class CloseTicket(commands.Cog):
                 await first_message.edit(view=view)  # Update buttons on the first message
 
             log_ticket_event(interaction.guild.id, f"Ticket closed in {interaction.channel.name} by {interaction.user}")
-            log_channel = interaction.guild.get_channel(config["log_channel_id"])
+            log_channel = interaction.guild.get_channel(config.log_channel_id)
             if log_channel:
                 await log_channel.send(f"📌 Ticket closed: {interaction.channel.name} by {interaction.user.mention}")
 
