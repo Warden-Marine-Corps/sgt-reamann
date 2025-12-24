@@ -3,6 +3,9 @@ import os
 import logging
 logger = logging.getLogger(__name__)
 
+
+raise DeprecationWarning("selfrole_utils.py is deprecated, use selfrole_db.py for DB operations and manage configs/logs accordingly.")
+
 # Load role configuration from JSON file
 def load_role_config(guild_id):
     """Load the role configuration JSON file, ensuring the file exists."""

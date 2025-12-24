@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils.selfrole_utils import load_role_config
+from utils.selfrole_db import load_role_config
+from data.selfroleblock import SelfRoleBlock
 
 class RoleSelectionView(discord.ui.View):
     """View containing buttons for role assignment."""
@@ -10,9 +11,8 @@ class RoleSelectionView(discord.ui.View):
         for role in roles:
             # Ensure emoji is properly set
             emoji = role.get("emoji")
-            if isinstance(emoji, int):  # Discord emoji (ID-based)
-                emoji = discord.PartialEmoji(name="emoji", id=emoji)  # Convert to PartialEmoji
-
+            if emoji is not None and emoji.isdigit():  # Custom emoji ID
+                emoji = discord.PartialEmoji(name="emoji", id=int(emoji))  # Convert to PartialEmoji
             self.add_item(RoleButton(role["role_id"], role["name"], emoji))
 
 class RoleButton(discord.ui.Button):
@@ -49,12 +49,12 @@ class RoleSelectionCog(commands.Cog):
     @app_commands.default_permissions(administrator=True)
     async def sendroles(self, interaction: discord.Interaction):
         """Admin selects which predefined role selection message to send."""
-        roles_data = load_role_config(interaction.guild_id)
+        selfroleblocks : list[SelfRoleBlock] = await load_role_config(interaction.guild_id)
         
         # Create selection dropdown
         options = [
-            discord.SelectOption(label=data["message"], value=str(index))
-            for index, data in enumerate(roles_data)
+            discord.SelectOption(label=block.message, value=str(index))
+            for index, block in enumerate(selfroleblocks)
         ]
         
         class RoleDropdown(discord.ui.Select):
@@ -63,15 +63,15 @@ class RoleSelectionCog(commands.Cog):
             
             async def callback(self, select_interaction: discord.Interaction):
                 index = int(self.values[0])
-                selected_data = roles_data[index] #selects only one of the many self roll select maseg tables in self_role_select
+                selected_block = selfroleblocks[index] #selects only one of the many self roll select maseg tables in self_role_select
                 
                 embed = discord.Embed(
                     title="Role Selection",
-                    description=selected_data["message"],
+                    description=selected_block.message,
                     color=0x00aaff
                 )
-                
-                view = RoleSelectionView(selected_data["roles"])
+
+                view = RoleSelectionView(selected_block.roles)
                 await select_interaction.channel.send(embed=embed, view=view)
                 await select_interaction.response.send_message("✅ Role selection message sent!", ephemeral=True)
 

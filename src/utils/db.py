@@ -10,8 +10,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 async def init_db_pool():
+    host=os.getenv("DATABASE_HOST", "localhost")
     pool : aiomysql.Pool = await aiomysql.create_pool(
-        host=os.getenv("DATABASE_HOST", "localhost"),
+        host=host,
         port=int(os.getenv("DATABASE_PORT", 3306)),
         user=os.getenv("DATABASE_USER", "root"),
         password=os.getenv("DATABASE_PASSWORD", None),
@@ -20,7 +21,7 @@ async def init_db_pool():
         maxsize=10,   # maximale Anzahl Verbindungen
         autocommit=True
     )
-    logger.info("Connected to {host} DB!")
+    logger.info(f"Connected to {host} DB!")
     return pool
 
 async def save_event(pool : aiomysql.Pool, event: Event) -> int:

@@ -4,11 +4,12 @@ from discord.ext import commands, tasks
 from discord.ext import commands
 
 #our utils imports
+from data.selfroleblock import SelfRoleBlock
 import utils.db as db
 import utils.reminder as reminder
 from commands.tickets.create_panel import *
 from commands.selfroles.rolemessage import RoleSelectionView
-from utils.selfrole_utils import load_role_config
+from utils.selfrole_db import load_role_config
 from utils.discord_utils import ensure_guild_directories
 from utils.logger import log_event
 
@@ -40,9 +41,9 @@ class OnReadyCog(commands.Cog):
         for guild in self.bot.guilds:  # Loop through all guilds the bot is in
             ensure_guild_directories(guild.id)
             try:
-                config = load_role_config(guild.id)  # Load config for this guild
-                for entry in config:  # Loop through all role selection messages
-                    self.bot.add_view(RoleSelectionView(entry["roles"]))  # Register view per message
+                config : list[SelfRoleBlock] = await load_role_config(guild.id)  # Load config for this guild
+                for block in config:  # Loop through all role selection messages
+                    self.bot.add_view(RoleSelectionView(block.roles))  # Register view per message
 
             except FileNotFoundError:
                 logger.error(f"No role config found for guild {guild.id}, skipping.")

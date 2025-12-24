@@ -10,6 +10,7 @@ from utils.token import load_token
 from utils.path import SRC_PATH
 import utils.db as db
 import utils.ticket_db as ticket_db
+import utils.selfrole_db as selfrole_db
 
 #arg parserWD
 parser = argparse.ArgumentParser()
@@ -71,6 +72,7 @@ class ReamannBot(commands.Bot):
         #Create DB Connection
         self.pool : aiomysql.Pool = await db.init_db_pool() #append pool to bot Objekt
         ticket_db.pool = self.pool  # Set the pool in ticket_db module
+        selfrole_db.pool = self.pool  # Set the pool in selfrole_db module
         #Error handling Missing #TODO
     
     async def on_command_error(self, ctx, error):
