@@ -46,9 +46,9 @@ class RoleSelectionCog(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="sendroles", description="Send a role selection message.")
-    @app_commands.default_permissions(administrator=True)
+    @app_commands.checks.has_permissions(manage_roles=True)
     async def sendroles(self, interaction: discord.Interaction):
-        """Admin selects which predefined role selection message to send."""
+        """Role Manager selects which predefined role selection message to send."""
         selfroleblocks : list[SelfRoleBlock] = await load_role_config(interaction.guild_id)
         
         # Create selection dropdown

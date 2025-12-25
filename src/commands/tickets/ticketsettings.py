@@ -405,11 +405,8 @@ class TicketSettings(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="ticketsettings", description="Configure ticket settings.")
+    @app_commands.checks.has_permissions(administrator=True)
     async def ticketsettings(self, interaction: discord.Interaction):
-        # Check if user has admin permissions
-        if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message("Only administrators can use this command! 🔒", ephemeral=True)
-            return
 
         # Load current configuration
         config = await load_ticket_config(interaction.guild_id)

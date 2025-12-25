@@ -231,7 +231,7 @@ class General_Slash_Commands(commands.Cog):
             color=discord.Color.green()
         )
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1394984374658793583/1446884027469398086/overview-pages-2.png?ex=69359b41&is=693449c1&hm=dffef623e232de7ba0876d2e79acd02c82581de78088e5498eaa789a8c19bf14&")
-        for element in self.bot.tree.get_commands():
+        for element in self.bot.tree.get_commands()[:25]:
              element: app_commands.Command
              embed.add_field(name="{}".format(element.name), value="{}".format(element.description), inline=False)
 

@@ -222,12 +222,8 @@ class TicketPanel(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="ticketpanel", description="Post the ticket panel.")
+    @app_commands.checks.has_permissions(administrator=True)
     async def ticketpanel(self, interaction: discord.Interaction):
-        # Check if user has admin permissions
-        if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message("Only administrators can use this command! 🔒", ephemeral=True)
-            return
-
         embed = discord.Embed(title="Need Assistance?", description="Select a reason to open a ticket below.", color=0x00aaff)
         await interaction.channel.send(embed=embed, view=TicketView())
         await interaction.response.send_message("✅ Ticket selection message sent!", ephemeral=True)

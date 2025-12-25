@@ -18,7 +18,8 @@ class SelfRoleParserCog(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="selfroleparser", description="Loading a SelfRole Config from a file")
-    @app_commands.describe(file="The json file to be processed")
+    @app_commands.describe(file="The json file to be processed", clear="Whether to clear existing config before loading")
+    @app_commands.checks.has_permissions(manage_roles=True)
     async def selfroleparser(
         self, interaction: discord.Interaction, file: discord.Attachment, clear: bool
     ):
