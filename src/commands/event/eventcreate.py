@@ -4,10 +4,11 @@ import discord
 import asyncio
 import dateparser
 from datetime import datetime
-from data.event import Event
 
 #our utils imports
 import utils.db as db
+from data.event import Event, ParticipantType
+from utils.event.event_embed import update_event_embed 
 
 #logger
 import logging
@@ -34,27 +35,17 @@ class RemoveButton(discord.ui.Button):
         # Hole das alte Embed
         old_embed = interaction.message.embeds[0]  # erstes Embed der Nachricht
 
-        # Teilnehmerliste erweitern
-        participants_field = next((f for f in old_embed.fields if f.name == "Participants"), None) #geht einmal alles durch um zu schauen obs das feld überhaupt gibt
-        if participants_field:
-            new_value = participants_field.value.replace(f"\n> {interaction.user.mention}","").replace(f"> {interaction.user.mention}","") # removes the line with the user mention
-            logger.debug(participants_field.value)
-            logger.debug(new_value)
-            # Neues Embed bauen
-            new_embed = discord.Embed(
-                title=old_embed.title,
-                description=old_embed.description,
-                color=old_embed.color
-            )
-            for f in old_embed.fields: # geht nochmal alle fields durch
-                if f.name == "Participants":
-                    new_embed.add_field(name="Participants", value=new_value, inline=f.inline)
-                else:
-                    new_embed.add_field(name=f.name, value=f.value, inline=f.inline)
-        else:
-            # Falls es noch kein Teilnehmer-Feld gibt
-            new_embed = old_embed.copy()
-            new_embed.add_field(name="Participants", value=interaction.user.mention, inline=False)
+        # Neues Embed bauen
+        new_embed = discord.Embed(
+            title=old_embed.title,
+            description=old_embed.description,
+            color=old_embed.color
+        )
+
+        # Teilnehmerliste aktualisieren
+        for f in old_embed.fields:
+            new_value = f.value.replace(f"\n> {interaction.user.mention}","").replace(f"> {interaction.user.mention}","") # removes the line with the user mention
+            new_embed.add_field(name=f.name, value=new_value, inline=f.inline)
 
         # Andere Embed-Attribute kopieren
         new_embed.set_image(url=old_embed.image.url)
@@ -67,53 +58,38 @@ class RemoveButton(discord.ui.Button):
         # Nachricht aktualisieren
         await interaction.message.edit(embed=new_embed)
 
-class MyButton(discord.ui.Button):
-    """MyButton"""
-    def __init__(self, event_id: int):
-        super().__init__(label="✅", style=discord.ButtonStyle.grey, custom_id=str(event_id))
+class ParticipantButton(discord.ui.Button):
+    """ParticipantButton"""
+    def __init__(self, event_id: int, participant_type_id: int, emoji: str | discord.PartialEmoji | None = None):
+        super().__init__(emoji=emoji, style=discord.ButtonStyle.grey, custom_id=str(f"{event_id}_{participant_type_id}"))
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer()  # Prevent interaction timeout
-        event_id = int(interaction.data["custom_id"])
-
+        custom_id_split = interaction.data["custom_id"].split("_")
+        event_id = int(custom_id_split[0])
+        participant_type_id = int(custom_id_split[1])
         if(await db.is_user_in_event(self.view.bot.pool, interaction.user.id, event_id)):
-            await interaction.followup.send("You are already signed up for this event!", ephemeral=True)
-            return
+            if(await db.get_participant_type_id(self.view.bot.pool, interaction.user.id, event_id) == participant_type_id):
+                await interaction.followup.send("You are already signed up for this event!", ephemeral=True)
+                return
+            else:
+                old_participant_type_id = await db.get_participant_type_id(self.view.bot.pool, interaction.user.id, event_id)
+                await db.update_participant_type(self.view.bot.pool, event_id, interaction.user.id, old_participant_type_id, participant_type_id)
+                await interaction.followup.send("Your participant type has been updated!", ephemeral=True)
         else:
-            await db.save_participant(self.view.bot.pool, event_id, interaction.user.id)
+            await db.save_participant(self.view.bot.pool, event_id, interaction.user.id, participant_type_id)
             await interaction.followup.send("You have signed up for the event!", ephemeral=True)
 
         # UPDATE the Embed to show the new participant
         # Hole das alte Embed
         old_embed = interaction.message.embeds[0]  # erstes Embed der Nachricht
 
-        # Teilnehmerliste erweitern
-        participants_field = next((f for f in old_embed.fields if f.name == "Participants"), None)
-        if participants_field:
-            new_value = participants_field.value + f"\n> {interaction.user.mention}"
-            # Neues Embed bauen
-            new_embed = discord.Embed(
-                title=old_embed.title,
-                description=old_embed.description,
-                color=old_embed.color
-            )
-            for f in old_embed.fields:
-                if f.name == "Participants":
-                    new_embed.add_field(name="Participants", value=new_value, inline=f.inline)
-                else:
-                    new_embed.add_field(name=f.name, value=f.value, inline=f.inline)
-        else:
-            # Falls es noch kein Teilnehmer-Feld gibt
-            new_embed = old_embed.copy()
-            new_embed.add_field(name="Participants", value=interaction.user.mention, inline=False)
+        #get participant type to know which field to update
+        #participant_type_id = await db.get_participant_type_id(self.view.bot.pool, interaction.user.id, event_id)
+        participant_type = await db.get_participant_type(self.view.bot.pool, participant_type_id)
 
-        # Andere Embed-Attribute kopieren
-        new_embed.set_image(url=old_embed.image.url)
-        logger.debug("author name: "+ str(old_embed.author.name))
-        if old_embed.author.name is not None:
-            new_embed.set_author(name=old_embed.author.name, icon_url=old_embed.author.icon_url, url=old_embed.author.url)
-        new_embed.set_footer(text=old_embed.footer.text, icon_url=old_embed.footer.icon_url)
-        new_embed.set_thumbnail(url=old_embed.thumbnail.url)
+        # Neues Embed bauen
+        new_embed = await update_event_embed(old_embed, interaction, participant_type)
 
         # Nachricht aktualisieren
         await interaction.message.edit(embed=new_embed)
@@ -124,8 +100,7 @@ class MyView(discord.ui.View):
     def __init__(self, bot, event_id: int): 
         super().__init__(timeout=None)
         self.bot = bot
-        self.add_item(MyButton(event_id))
-        self.add_item(RemoveButton(event_id))
+        # Dynamically add ParticipantButtons based on participant types in create_event command
         
 
 class EventCommands(commands.Cog):
@@ -149,8 +124,7 @@ class EventCommands(commands.Cog):
             embed.add_field(name="Time", value="<t:{}:F>\n⌛<t:{}:R>".format(new_date, new_date), inline=False)
             if not roles is None:
                 embed.add_field(name="Roles", value=roles, inline=False)
-            for participant_type in [0]: #TODO if more then one participant_type is added i the future
-                embed.add_field(name=f"Participants", value="", inline=True)
+                
             embed.set_image(url=image)
             embed.set_footer(text=f"created by {interaction.user.name}", icon_url=interaction.user.display_avatar.url)
 
@@ -165,11 +139,28 @@ class EventCommands(commands.Cog):
             #event_id = await db.save_event(self.bot.pool,name,parsed_date,description,0,0,image,guild_id,channel_id,role_id,msg.id)
             event = Event(None, name, parsed_date, description, 0, 0, image, guild_id, channel_id, role_id, msg.id, interaction.user.id)
             event_id = await db.save_event(self.bot.pool, event)
+            
 
             logger.info(f"made new event: ID {event_id}, NAME: {name} in Guild: {interaction.guild.name}")
-            
+
             #Add Buttons View
             view = MyView(self.bot,event_id)
+            # Add participant types fields to embed
+            for participant_type in await db.event_participant_types(self.bot.pool, event_id):
+                participant_type: ParticipantType
+
+                # Add emojis to buttons if existant in participant type str | int | None
+                if participant_type.emoji is not None and participant_type.emoji.isdigit():  # Custom emoji ID
+                    emoji = discord.PartialEmoji(name="emoji", id=int(participant_type.emoji))  # Convert to PartialEmoji
+                else:
+                    emoji = participant_type.emoji  # Use as is (could be Unicode emoji)
+                view.add_item(ParticipantButton(event_id, participant_type.participant_type_id, emoji))  # Add participant type Buttons
+
+                embed.add_field(name=f"{emoji} {participant_type.type_name}", value="", inline=True)
+
+            #add remove button
+            view.add_item(RemoveButton(event_id))
+            
             await msg.edit(embed=embed, view=view)
 
     @app_commands.command(name="list_all_events", description="List all current events")

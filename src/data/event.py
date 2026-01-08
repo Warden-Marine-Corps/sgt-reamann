@@ -28,3 +28,24 @@ class Event:
         self.message_id = message_id
         self.creator_id = creator_id
     
+class Participant:
+    event_id: int
+    user_id: int
+    participant_type: int 
+
+    def __init__(self, event_id: int, user_id: int, participant_type: int):
+        self.event_id = event_id
+        self.user_id = user_id
+        self.participant_type = participant_type
+
+class ParticipantType:
+    participant_type_id: int
+    type_name: str
+    event_id: int
+    emoji: str | int | None
+
+    def __init__(self, participant_type_id: int, type_name: str, event_id: int, emoji: str | int | None = None):
+        self.participant_type_id = participant_type_id
+        self.type_name = type_name
+        self.event_id = event_id
+        self.emoji = emoji

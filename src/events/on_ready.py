@@ -6,7 +6,7 @@ from discord.ext import commands
 #our utils imports
 from data.selfroleblock import SelfRoleBlock
 import utils.db as db
-import utils.reminder as reminder
+import utils.event.reminder as reminder
 from commands.tickets.create_panel import *
 from commands.selfroles.rolemessage import RoleSelectionView
 from utils.selfrole_db import load_role_config

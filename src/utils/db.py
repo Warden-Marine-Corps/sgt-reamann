@@ -2,7 +2,7 @@ import aiomysql
 import datetime
 import os
 from typing import List, Tuple
-from data.event import Event
+from data.event import Event, ParticipantType
 
 
 #logger
@@ -154,7 +154,88 @@ async def is_user_in_event(pool: aiomysql.Pool, user_id: int, event_id: int) -> 
                 (user_id, event_id)
             )
             return await cur.fetchone() is not None
-            
+
+async def get_participant_type_id(pool: aiomysql.Pool, user_id: int, event_id: int) -> int | None:
+    """get the participant type id for a user in an event"""
+    async with pool.acquire() as conn:
+        conn : aiomysql.Connection
+        async with conn.cursor() as cur:
+            cur : aiomysql.Cursor
+            await cur.execute(
+                """
+                SELECT participant_type
+                FROM Participant
+                WHERE user_id = %s AND event_id = %s
+                LIMIT 1
+                """,
+                (user_id, event_id)
+            )
+            result = await cur.fetchone()
+            if result:
+                return result[0]
+            return None
+
+async def event_participant_types(pool: aiomysql.Pool, event_id: int) -> list[ParticipantType]:
+    """get all participant types for an event or the default ones if none exist for the event"""
+    async with pool.acquire() as conn:
+        conn : aiomysql.Connection
+        async with conn.cursor() as cur:
+            cur : aiomysql.Cursor
+            await cur.execute(
+                """
+                SELECT * FROM ParticipantType
+                WHERE event_id = %s
+                """,
+                (event_id,)
+            )
+            rows: list[tuple] = await cur.fetchall()
+            if rows == ():  #falls keine typen für das event existieren
+                await cur.execute(
+                    """
+                    SELECT * FROM ParticipantType
+                    WHERE event_id IS NULL
+                    """,
+                )
+                rows: list[tuple] = await cur.fetchall()
+
+            return [ParticipantType(*r) for r in rows]
+
+
+async def get_participant_type(pool: aiomysql.Pool, participant_type_id: int) -> ParticipantType | None:
+    """get the participant type by its id"""
+    async with pool.acquire() as conn:
+        conn : aiomysql.Connection
+        async with conn.cursor() as cur:
+            cur : aiomysql.Cursor
+            await cur.execute(
+                """
+                SELECT *
+                FROM ParticipantType
+                WHERE participant_type_id = %s
+                LIMIT 1
+                """,
+                (participant_type_id,)
+            )
+            result = await cur.fetchone()
+            if result:
+                return ParticipantType(*result)
+            return None
+
+async def update_participant_type(pool: aiomysql.Pool, event_id: int, user_id: int, old_type_id: int, new_type_id: int):
+    async with pool.acquire() as conn:
+        conn : aiomysql.Connection
+        async with conn.cursor() as cur:
+            cur : aiomysql.Cursor
+            await cur.execute(
+                """
+                UPDATE Participant
+                SET participant_type = %s
+                WHERE event_id = %s AND user_id = %s AND participant_type = %s
+                """,
+                (new_type_id, event_id, user_id, old_type_id)
+            )
+            await conn.commit()
+
 async def save_bot_command(pool: aiomysql.Pool, command_name : str, command_description: str):
     async with pool.acquire() as conn:
         conn : aiomysql.Connection

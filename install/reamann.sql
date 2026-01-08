@@ -107,17 +107,20 @@ CREATE TABLE MultiEvent(
         REFERENCES `Event`(event_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-
 );
 
 CREATE TABLE ParticipantType(
 	participant_type_id INT AUTO_INCREMENT,
 	type_name VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
 	event_id INT,
+	emoji VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
 	CONSTRAINT PK_ParticipantType PRIMARY KEY(participant_type_id),
 	CONSTRAINT FK_ParticipantType_event_id FOREIGN KEY (event_id)
         REFERENCES `Event`(event_id)
         ON DELETE CASCADE
-        ON UPDATE CASCADEReamann
-	
+        ON UPDATE CASCADE
 );
+
+INSERT INTO ParticipantType (participant_type_id, type_name, event_id, emoji) VALUES
+(1, 'Participants', NULL, '✅'),
+(2, 'Tentative', NULL, '❔');
