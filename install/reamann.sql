@@ -112,7 +112,7 @@ CREATE TABLE MultiEvent(
 CREATE TABLE ParticipantType(
 	participant_type_id INT AUTO_INCREMENT,
 	type_name VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
-	event_id INT,
+	event_id INT, -- NULL if global
 	emoji VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
 	CONSTRAINT PK_ParticipantType PRIMARY KEY(participant_type_id),
 	CONSTRAINT FK_ParticipantType_event_id FOREIGN KEY (event_id)
