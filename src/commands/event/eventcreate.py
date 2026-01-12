@@ -97,7 +97,7 @@ class ParticipantButton(discord.ui.Button):
 
 class MyView(discord.ui.View):
     """View containing buttons for role assignment."""
-    def __init__(self, bot, event_id: int): 
+    def __init__(self, bot): 
         super().__init__(timeout=None)
         self.bot = bot
         # Dynamically add ParticipantButtons based on participant types in create_event command
@@ -144,7 +144,7 @@ class EventCommands(commands.Cog):
             logger.info(f"made new event: ID {event_id}, NAME: {name} in Guild: {interaction.guild.name}")
 
             #Add Buttons View
-            view = MyView(self.bot,event_id)
+            view = MyView(self.bot)
             # Add participant types fields to embed
             for participant_type in await db.event_participant_types(self.bot.pool, event_id):
                 participant_type: ParticipantType

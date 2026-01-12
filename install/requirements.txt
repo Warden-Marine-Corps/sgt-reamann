@@ -1,0 +1,7 @@
+discord
+aiomysql
+dateparser
+ollama
+requests
+PyNaCl
+yt_dlp
