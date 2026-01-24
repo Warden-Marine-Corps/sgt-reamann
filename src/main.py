@@ -68,6 +68,7 @@ class ReamannBot(commands.Bot):
         """ This is called when the bot boots, to setup the global commands """
         await self.load_modules_from_path(os.path.join(SRC_PATH, "commands"), "commands")
         await self.load_modules_from_path(os.path.join(SRC_PATH, "events"), "events")
+        await self.load_cogs() #load cogs after commands and events
 
         #Create DB Connection
         self.pool : aiomysql.Pool = await db.init_db_pool() #append pool to bot Objekt
@@ -93,6 +94,8 @@ class ReamannBot(commands.Bot):
         for entry in os.scandir(base_path):
             if entry.is_dir():
                 new_prefix = f"{module_prefix}.{entry.name}"
+                if entry.name == "cogs":  # Skip 'cogs' directories
+                    continue
                 await self.load_modules_from_path(entry.path, new_prefix)
             elif entry.is_file() and entry.name.endswith(".py"):
                 module_name = entry.name[:-3]  # remove .py
@@ -102,6 +105,21 @@ class ReamannBot(commands.Bot):
                     logger.info(f"Loaded: {module_path}")
                 except Exception as e:
                     logger.error(f"Error loading {module_path}: {e}")
+
+
+    # Alle Cogs laden
+    async def load_cogs(self):
+        await self.load_extension(f"cogs.BototVoice.src.commands.MusicCog")
+
+        # cogs_dir = "src/cogs"
+        # for folder in os.listdir(cogs_dir):
+        #     if os.path.isdir(os.path.join(cogs_dir, folder)) and folder != "__pycache__":
+        #         try:
+        #             #await self.load_modules_from_path(os.path.join(SRC_PATH,"cogs",folder,"src","commands"),f"cogs.{folder}.src.commands")
+        #             await self.load_extension(f"cogs.{folder}.src.commands.MusicCog")
+        #             print(f"✓ Loaded {folder}")
+        #         except Exception as e:
+        #             print(f"✗ Failed to load {folder}: {e}")
     
 intents = discord.Intents.all()
 intents.voice_states = True

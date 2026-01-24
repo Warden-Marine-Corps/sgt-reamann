@@ -1,0 +1,3 @@
+[submodule "src/cogs/BototVoice"]
+	path = src/cogs/BototVoice
+	url = https://github.com/Arl-Quantum4-0/BototVoice
