@@ -398,29 +398,3 @@ class SettingsView(discord.ui.View):
         except:
             await interaction.response.send_message("❌ Failed Saving Ticket settings.", ephemeral=True)
 
-class TicketSettings(commands.Cog):
-    """Command to open the settings modal with pre-loaded values."""
-    
-    def __init__(self, bot):
-        self.bot = bot
-
-    @app_commands.command(name="ticketsettings", description="Configure ticket settings.")
-    @app_commands.checks.has_permissions(administrator=True)
-    async def ticketsettings(self, interaction: discord.Interaction):
-
-        # Load current configuration
-        config = await load_ticket_config(interaction.guild_id)
-
-        # Gather guild data
-        roles : list[discord.Role] = [role for role in interaction.guild.roles if not role.is_default()]
-        categories = list(interaction.guild.categories)
-        channels = list(interaction.guild.text_channels)
-
-        # # Create and send the settings view
-        view = SettingsView(config, roles, categories, channels)
-        await interaction.response.send_message("🔧 Please Select TicketSettings:", view=view, ephemeral=True)
-        view.message = await interaction.original_response()
-
-
-async def setup(bot):
-    await bot.add_cog(TicketSettings(bot))

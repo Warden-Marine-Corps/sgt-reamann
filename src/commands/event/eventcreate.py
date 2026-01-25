@@ -103,11 +103,15 @@ class MyView(discord.ui.View):
         # Dynamically add ParticipantButtons based on participant types in create_event command
         
 
-class EventCommands(commands.Cog):
+class EventCog(commands.Cog):
+    """Event Management Commands"""
+    
+    event_group = app_commands.Group(name="event", description="Event Management Commands")
+    
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="create_event", description="Create a new event")
+    @event_group.command(name="create", description="Create a new event")
     @app_commands.describe(name="name of the Event", date="Datetime of the Event in YYYY-MM-DD HH:MM UTC+1", description="Description of the Event (optional)", roles="(WIP) Roles to ping (optional)", image="Image of the event (optional)")
     async def create_event(self, interaction: Interaction, name: str, date : str, description : str, roles : str=None, image : str="https://images.surferseo.art/950e33dd-2314-4124-a09e-c1b7dcc02a86.png"):
 
@@ -163,7 +167,7 @@ class EventCommands(commands.Cog):
             
             await msg.edit(embed=embed, view=view)
 
-    @app_commands.command(name="list_all_events", description="List all current events")
+    @event_group.command(name="list_all", description="List all current events")
     async def list_all_events(self, interaction: Interaction):
 
             events = await db.get_all_current_events(self.bot.pool, datetime.now())
@@ -180,7 +184,7 @@ class EventCommands(commands.Cog):
 
             await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="list_my_events", description="list events you're participating in")
+    @event_group.command(name="list_my", description="list events you're participating in")
     async def list_my_events(self, interaction: Interaction):
 
             events = await db.get_all_events(self.bot.pool, interaction.user.id, datetime.now())
@@ -197,5 +201,6 @@ class EventCommands(commands.Cog):
 
             await interaction.response.send_message(embed=embed)
 
+
 async def setup(bot):
-    await bot.add_cog(EventCommands(bot))
+    await bot.add_cog(EventCog(bot))

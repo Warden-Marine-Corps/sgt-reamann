@@ -217,17 +217,3 @@ class TicketDropdown(discord.ui.Select):
         if log_channel:
             await log_channel.send(f"📨 Ticket opened by {interaction.user.mention} for **{reason}**: {channel.mention}")
 
-class TicketPanel(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @app_commands.command(name="ticketpanel", description="Post the ticket panel.")
-    @app_commands.checks.has_permissions(administrator=True)
-    async def ticketpanel(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="Need Assistance?", description="Select a reason to open a ticket below.", color=0x00aaff)
-        await interaction.channel.send(embed=embed, view=TicketView())
-        await interaction.response.send_message("✅ Ticket selection message sent!", ephemeral=True)
-
-
-async def setup(bot):
-    await bot.add_cog(TicketPanel(bot))
