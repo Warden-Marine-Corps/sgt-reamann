@@ -177,9 +177,9 @@ class EventCog(commands.Cog):
             
             embed = Embed(title="Upcmoming events", description="all upcoming events", color=discord.Color.magenta())
             # maximum of 25 embeds
-            for event in events:
-                name = event[1]
-                time_stamp = int(event[2].timestamp())
+            for event in events[:25]:
+                name = event.event_name
+                time_stamp = int(event.event_datetime.timestamp())
                 embed.add_field(name=name, value="<t:{}:F> — <t:{}:R>".format(time_stamp, time_stamp), inline=False)
 
             await interaction.response.send_message(embed=embed)
@@ -195,8 +195,8 @@ class EventCog(commands.Cog):
             embed = Embed(title="Your events", description="upcoming events you're participating in", color=discord.Color.dark_purple())
             
             for event in events:
-                name = event[1]
-                time_stamp = int(event[2].timestamp())
+                name = event.event_name
+                time_stamp = int(event.event_datetime.timestamp())
                 embed.add_field(name=name, value="<t:{}:F> — <t:{}:R>".format(time_stamp, time_stamp), inline=False)
 
             await interaction.response.send_message(embed=embed)
