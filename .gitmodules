@@ -1,3 +1,6 @@
-[submodule "src/cogs/BototVoice"]
-	path = src/cogs/BototVoice
+[submodule "modules/BototVoice"]
+	path = modules/BototVoice
 	url = git@github.com:Arl-Quantum4-0/BototVoice.git
+[submodule "modules/EventBot"]
+	path = modules/EventBot
+	url = git@gitlab.com:dhbw-swe1-nagel/swe-tinf24b3/gruppe4/manfread/bot-backend.git

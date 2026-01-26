@@ -6,12 +6,14 @@ from discord.ext import commands
 #our utils imports
 from data.selfroleblock import SelfRoleBlock
 import utils.db as db
-import utils.event.reminder as reminder
 from commands.tickets.create_panel import *
 from commands.selfroles.rolemessage import RoleSelectionView
 from utils.selfrole_db import load_role_config
 from utils.discord_utils import ensure_guild_directories
 from utils.logger import log_event
+
+# Import EventBot reminder cog
+from modules.EventBot.src.events.on_ready import ReminderCog
 
 #logger
 import logging
@@ -21,15 +23,6 @@ logger = logging.getLogger(__name__)
 class OnReadyCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    @tasks.loop(minutes=1)
-    async def reminder_loop(self):
-        #try except just for debug
-        try:
-            await reminder.send_reminders(self.bot)
-        except Exception as e:
-            logger.error("Fehler im reminder_loop:", e)
-            #traceback.print_exc()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -61,12 +54,7 @@ class OnReadyCog(commands.Cog):
         await db.save_list_bot_commands(self.bot.pool, commands_list)
         logger.info(f"saved {len(commands_list)} bot commands to database")
 
-        #reminder loop 
-        logger.debug("Starting reminder loop")
-        try:
-            self.reminder_loop.start()
-        except Exception as e:
-            logger.error("Fehler beim Starten des reminder_loop:", e)
+        await self.bot.add_cog(ReminderCog(self))  # Add the ReminderCog from EventBot
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(OnReadyCog(bot))
