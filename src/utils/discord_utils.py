@@ -27,7 +27,8 @@ def load_discord_config(guild_id: int) -> dict | int:
     try:
         with open(os.path.join(DATA_PATH,str(guild_id),DISCORD_CONFIG)) as f:
             return json.load(f)
-    except:
+    except Exception as e:
+        logger.warning(f"Failed to load discord config for guild {guild_id}. Check if the config file exists and is valid JSON. Error: {e}")
         return 1
 
 def get_welcome_channel(guild_id: int) -> int:
