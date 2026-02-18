@@ -22,30 +22,44 @@ class OnMemberJoin(commands.Cog):
         
         if guild.id == 957698865820213329: #only ai messages in WMC
 
-            welcome_message = await chat_with_ai([
-                {"role": "system", "content": "You are Sgt. Réamann, welcoming a new recruit with salty humor."},
-                {"role": "user", "content": f"Welcome {member.display_name} to the Warden Marine Corps."}
-            ])
+            welcome_channel_message = f"""Hey there {member.name}, welcome to the Warden Marine Corps! <:wmc_emblem_emoji:1362251086961840218> 
+            If you’re looking to enlist, just post your verification right here: https://discord.com/channels/957698865820213329/1185908166316261407
 
-            welcome_channel_message = await chat_with_ai([
-                {
-                    "role": "system",
-                    "content": (
-                        "You are Sgt. Réamann, a salty, battle-hardened NCO of the Warden Marine Corps. "
-                        "You greet new Privates like they're stepping off a landing ship into their first warzone—"
-                        "gritty, humorous, and just a little intimidating."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        f"Private {member.display_name} just disembarked from the landing ship. "
-                        "Welcome them to the Warden Marine Corps with an appropriate one or two line message."
-                    )
-                }
-            ])
+            Got questions you can ask those here: https://discord.com/channels/957698865820213329/1194633938157707366
+
+            Want to browse the FAQ? You’ll find it here: https://discord.com/channels/957698865820213329/1328111984192782378
+
+            If you’re a representative or you need assistance, feel free to open a ticket here: https://discord.com/channels/957698865820213329/968993153300435034
+
+            If you’re a new player, that doesnt know much. Pls check out: https://discord.com/channels/957698865820213329/1384612515756904508 after verifying!
+
+            And if you’re not quite sure what to do next, no worries just ping any recruiter or officer who’s online. We don’t bite… usually. <:saluting_sgt_emoji:1368969117767569458>
+                            """
+            # the out commented code is the version for chat with ai
+        #     welcome_message = await chat_with_ai([
+        #         {"role": "system", "content": "You are Sgt. Réamann, welcoming a new recruit with salty humor."},
+        #         {"role": "user", "content": f"Welcome {member.display_name} to the Warden Marine Corps."}
+        #     ])
+
+        #     welcome_channel_message = await chat_with_ai([
+        #         {
+        #             "role": "system",
+        #             "content": (
+        #                 "You are Sgt. Réamann, a salty, battle-hardened NCO of the Warden Marine Corps. "
+        #                 "You greet new Privates like they're stepping off a landing ship into their first warzone—"
+        #                 "gritty, humorous, and just a little intimidating."
+        #             )
+        #         },
+        #         {
+        #             "role": "user",
+        #             "content": (
+        #                 f"Private {member.display_name} just disembarked from the landing ship. "
+        #                 "Welcome them to the Warden Marine Corps with an appropriate one or two line message."
+        #             )
+        #         }
+        #     ])
         else:
-            welcome_channel_message =  f"I Welcome {member.display_name} to the {guild.name}"
+            welcome_channel_message =  f"{member.mention} I Welcome {member.display_name} to the {guild.name}"
 
         # # Send welcome message via DM
         # try:
@@ -57,7 +71,8 @@ class OnMemberJoin(commands.Cog):
         # Try to send the welcome message to a specific channel
         if welcome_channel:
             try:
-                await welcome_channel.send(f"{member.mention} {welcome_channel_message}")
+                # await welcome_channel.send(f"{member.mention} {welcome_channel_message}")
+                await welcome_channel.send(welcome_channel_message)
                 logger.info(f"Sent welcome message to {member.display_name} in #{welcome_channel.name} in {guild.name}.")
             except Exception as e:
                 logger.warning(f"Failed to send welcome message to #{welcome_channel.name} in {guild.name} for {member.display_name}: {e}")
