@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 #     )
 
 class General_Slash_Commands(commands.Cog):
+
+    lore_group = app_commands.Group(name="lore", description="Lore Management Commands")
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         logger.info("Slash Commands geladen")
@@ -112,7 +115,7 @@ class General_Slash_Commands(commands.Cog):
 # --- LORE
 
     # unnötig, aber als orientierung da lassen
-    @app_commands.command(name="addlog", description="Add a patch note to the changelog.")
+    @lore_group.command(name="addlog", description="Add a patch note to the changelog.")
     @app_commands.describe(note="The patch note to add")
     async def addlog(self, interaction: discord.Interaction, note: str):
         with open("data/meta.json") as f:
@@ -127,9 +130,9 @@ class General_Slash_Commands(commands.Cog):
         append_history(f"LOG ENTRY by {interaction.user.display_name}: {note}")
 
     # unnötig, aber als orientierung da lassen
-    @app_commands.command(name="addlore", description="Add a new lore entry.")
+    @lore_group.command(name="addlore", description="Add a new lore entry.")
     @app_commands.describe(entry="The lore entry to add")
-    async def addlore(self, interaction: discord.Interaction, entry: str):
+    async def add(self, interaction: discord.Interaction, entry: str):
         with open("data/meta.json") as f:
             meta = json.load(f)
             
@@ -142,7 +145,7 @@ class General_Slash_Commands(commands.Cog):
         append_history(f"LORE ENTRY by {interaction.user.display_name}: {entry}")
 
     # unnötig, aber als orientierung da lassen
-    @app_commands.command(name="versionlog", description="Rebuilds the README file.")
+    @lore_group.command(name="versionlog", description="Rebuilds the README file.")
     async def versionlog(self, interaction: discord.Interaction):
         with open("data/meta.json") as f:
             meta = json.load(f)
@@ -162,8 +165,8 @@ class General_Slash_Commands(commands.Cog):
         append_history(f"README updated by {interaction.user.display_name}")
 
     # unnötig, aber als orientierung da lassen
-    @app_commands.command(name="lorelist", description="Display all unit lore entries.")
-    async def lorelist(self, interaction: discord.Interaction):
+    @lore_group.command(name="lorelist", description="Display all unit lore entries.")
+    async def list(self, interaction: discord.Interaction):
         with open("data/meta.json") as f:
             lore_entries = json.load(f).get("lore", [])
             
@@ -175,9 +178,9 @@ class General_Slash_Commands(commands.Cog):
         await send_message(interaction, msg[:2000])  # truncate if needed
 
     # unnötig, aber als orientierung da lassen
-    @app_commands.command(name="loresearch", description="Search for specific lore entries.")
+    @lore_group.command(name="loresearch", description="Search for specific lore entries.")
     @app_commands.describe(keyword="Keyword to search for in the lore")
-    async def loresearch(self, interaction: discord.Interaction, keyword: str):
+    async def search(self, interaction: discord.Interaction, keyword: str):
         with open("data/meta.json") as f:
             lore_entries = json.load(f).get("lore", [])
             

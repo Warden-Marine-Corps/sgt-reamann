@@ -8,6 +8,9 @@ async def setup(bot): # a extension must have a setup function
 	await bot.add_cog(Justice_and_Discipline(bot)) # adding a cog
 
 class Justice_and_Discipline(commands.Cog):
+
+    JuDi_group = app_commands.Group(name="judi", description="Justice and Discipline Commands")
+
     def __init__(self, bot):
         self.bot = bot
         self.entries: dict | None = None
@@ -94,7 +97,7 @@ class Justice_and_Discipline(commands.Cog):
         with open(os.path.join(DATA_PATH, str(interaction.guild.id), "justice_and_discipline/justice_and_discipline.json"), "w") as file:
             json.dump(self.entries, file, indent=4)
             
-    @app_commands.command()
+    @JuDi_group.command()
     @app_commands.describe(msg="Pls give us the exact information what happend.", user="The specific user")
     async def report(self, interaction: discord.Interaction, msg: str, user: discord.Member):
         """
@@ -130,7 +133,7 @@ class Justice_and_Discipline(commands.Cog):
             await interaction.response.send_message("Report successfull!")
         
     
-    @app_commands.command()
+    @JuDi_group.command()
     @app_commands.describe(msg="Short Note to the disciplinary action", user="The specific user")
     async def discipline(self, interaction: discord.Interaction, msg: str, user: discord.Member):
         """
@@ -165,7 +168,7 @@ class Justice_and_Discipline(commands.Cog):
         if not interaction.response.is_done():
             await interaction.response.send_message("Report successfull!")
         
-    @app_commands.command()
+    @JuDi_group.command()
     @app_commands.describe(question="Short Note to the disciplinary action", user="Guilty User", duration="This is the time in hours how long the poll will hold")
     async def courtlog(self, interaction: discord.Interaction, question: str, user: discord.Member, duration: int):
         """
@@ -196,7 +199,7 @@ class Justice_and_Discipline(commands.Cog):
         if not interaction.response.is_done():
             await interaction.response.send_message(poll)
         
-    @app_commands.command()
+    @JuDi_group.command()
     @app_commands.describe(user="The specific user")
     async def pardon_report(self, interaction: discord.Interaction, user: discord.Member):
         """
@@ -204,21 +207,21 @@ class Justice_and_Discipline(commands.Cog):
         """
         
     
-    @app_commands.command()
+    @JuDi_group.command()
     @app_commands.describe(user="The specific user")
     async def pardon_discipline(self, interaction: discord.Interaction, user: discord.Member):
         """
         Deletes all displinary entries from a specific User
         """
 
-    @app_commands.command()
+    @JuDi_group.command()
     @app_commands.describe(user="The specific user")
     async def export_report(self, interaction: discord.Interaction, user: discord.Member):
         """
         Exports the Reportlist of a specific user as a .txt
         """
         
-    @app_commands.command()
+    @JuDi_group.command()
     @app_commands.describe(user="The specific user")
     async def export_dicipline(self, interaction: discord.Interaction, user: discord.Member):
         """

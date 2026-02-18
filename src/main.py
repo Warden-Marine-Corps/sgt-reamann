@@ -7,10 +7,21 @@ import argparse
 
 #our utils imports
 from utils.token import load_token
-from utils.path import SRC_PATH
+from utils.path import SRC_PATH, BASE_PATH
+
+# Add BASE_PATH and SRC_PATH to sys.path BEFORE importing from modules
+if BASE_PATH not in sys.path:
+    sys.path.insert(0, BASE_PATH)
+if SRC_PATH not in sys.path:
+    sys.path.insert(0, SRC_PATH)
+
 import utils.db as db
 import utils.ticket_db as ticket_db
 import utils.selfrole_db as selfrole_db
+import modules.EventBot.src.utils.event_db as event_db
+
+# Import EventBot reminder cog
+from modules.EventBot.src.events.on_ready import ReminderCog
 
 #arg parserWD
 parser = argparse.ArgumentParser()
@@ -73,7 +84,11 @@ class ReamannBot(commands.Bot):
         self.pool : aiomysql.Pool = await db.init_db_pool() #append pool to bot Objekt
         ticket_db.pool = self.pool  # Set the pool in ticket_db module
         selfrole_db.pool = self.pool  # Set the pool in selfrole_db module
-        #Error handling Missing #TODO
+        event_db.pool = self.pool  # Set the pool in event_db module
+        #Error handling Missing #TODO^
+
+        await self.load_cogs() #load cogs after commands and events
+
     
     async def on_command_error(self, ctx, error):
         if isinstance(error, discord.app_commands.CommandNotFound):
@@ -93,6 +108,8 @@ class ReamannBot(commands.Bot):
         for entry in os.scandir(base_path):
             if entry.is_dir():
                 new_prefix = f"{module_prefix}.{entry.name}"
+                if entry.name == "cogs":  # Skip 'cogs' directories
+                    continue
                 await self.load_modules_from_path(entry.path, new_prefix)
             elif entry.is_file() and entry.name.endswith(".py"):
                 module_name = entry.name[:-3]  # remove .py
@@ -102,6 +119,13 @@ class ReamannBot(commands.Bot):
                     logger.info(f"Loaded: {module_path}")
                 except Exception as e:
                     logger.error(f"Error loading {module_path}: {e}")
+
+
+    # Moduels Laden
+    async def load_cogs(self):
+        await self.load_extension("modules.BototVoice.src.commands.MusicCog")
+        await self.load_extension("modules.EventBot.src.commands.event.eventcreate")
+        # await self.load_extension("modules.EventBot.src.events.on_ready")
     
 intents = discord.Intents.all()
 intents.voice_states = True
