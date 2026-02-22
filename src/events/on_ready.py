@@ -54,7 +54,7 @@ class OnReadyCog(commands.Cog):
         await db.save_list_bot_commands(self.bot.pool, commands_list)
         logger.info(f"saved {len(commands_list)} bot commands to database")
 
-        await self.bot.add_cog(ReminderCog(self))  # Add the ReminderCog from EventBot
+        await self.bot.add_cog(ReminderCog(self.bot))  # Add the ReminderCog from EventBot
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(OnReadyCog(bot))
