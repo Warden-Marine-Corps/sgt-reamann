@@ -116,13 +116,21 @@ class ReamannBot(commands.Bot):
 
     #Rekusive Module loader function. used internaly 
     async def load_modules_from_path(self, base_path, module_prefix):
+        # List of files to skip (utility modules that aren't extensions)
+        skip_files = {"create_panel.py", "ticketsettings.py"}
+        
         for entry in os.scandir(base_path):
             if entry.is_dir():
                 new_prefix = f"{module_prefix}.{entry.name}"
-                if entry.name == "cogs":  # Skip 'cogs' directories
+                if entry.name == "cogs" or entry.name == "__pycache__":  # Skip 'cogs' and '__pycache__' directories
                     continue
                 await self.load_modules_from_path(entry.path, new_prefix)
             elif entry.is_file() and entry.name.endswith(".py"):
+                # Skip files in the skip list
+                if entry.name in skip_files:
+                    logger.debug(f"Skipping utility module: {entry.name}")
+                    continue
+                    
                 module_name = entry.name[:-3]  # remove .py
                 module_path = f"{module_prefix}.{module_name}"
                 try:

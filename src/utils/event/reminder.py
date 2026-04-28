@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 #our utils imports
 import utils
 import utils.db as db
-from data.event import Event
+from modules.EventBot.src.data.event import Event
 
 
 #logger

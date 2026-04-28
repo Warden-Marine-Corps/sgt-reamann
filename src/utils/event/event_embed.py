@@ -4,7 +4,7 @@ import discord
 
 #our utils imports
 import utils.db as db
-from data.event import Event, ParticipantType
+from modules.EventBot.src.data.event import Event, ParticipantType
 
 
 #logger
