@@ -1,7 +1,9 @@
 discord
+discord.py>=2.7
 aiomysql
 dateparser
 ollama
 requests
 PyNaCl
 yt_dlp
+youtubesearchpython

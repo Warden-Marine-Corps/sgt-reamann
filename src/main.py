@@ -1,4 +1,15 @@
 import os
+import sys
+
+# # Keep your normal project root
+# project_root = os.path.dirname(os.path.dirname(__file__))
+# sys.path.insert(0, project_root)
+
+# # Add EventBot's src folder as an additional import root
+# eventbot_path = os.path.join(project_root, "modules", "EventBot", "src")
+# sys.path.insert(0, eventbot_path)
+
+
 import discord
 from discord.ext import commands
 import aiomysql
@@ -8,7 +19,7 @@ import argparse
 #our utils imports
 from utils.token import load_token
 from utils.path import SRC_PATH, BASE_PATH
-
+ 
 # Add BASE_PATH and SRC_PATH to sys.path BEFORE importing from modules
 if BASE_PATH not in sys.path:
     sys.path.insert(0, BASE_PATH)
@@ -18,10 +29,10 @@ if SRC_PATH not in sys.path:
 import utils.db as db
 import utils.ticket_db as ticket_db
 import utils.selfrole_db as selfrole_db
-import modules.EventBot.src.utils.event_db as event_db
+# import modules.EventBot.src.utils.event_db as event_db
 
 # Import EventBot reminder cog
-from modules.EventBot.src.events.on_ready import ReminderCog
+# from modules.EventBot.src.events.on_ready import ReminderCog
 
 #arg parserWD
 parser = argparse.ArgumentParser()
@@ -41,7 +52,7 @@ if args.debug or os.getenv("DEBUG") == "true":
     handler.setFormatter(DetailedFormatter(datefmt="%H:%M:%S")) #datefmt="%Y-%m-%d %H:%M:%S"
 else:
     if sys.stdout.isatty():
-        print("Konsole unterstützt Farben")
+        print("Konsole unterst端tzt Farben")
         handler.setFormatter(CustomColorFormatter(datefmt="%H:%M:%S"))
     else:
         print("Keine Farben")
@@ -84,7 +95,7 @@ class ReamannBot(commands.Bot):
         self.pool : aiomysql.Pool = await db.init_db_pool() #append pool to bot Objekt
         ticket_db.pool = self.pool  # Set the pool in ticket_db module
         selfrole_db.pool = self.pool  # Set the pool in selfrole_db module
-        event_db.pool = self.pool  # Set the pool in event_db module
+        # event_db.pool = self.pool  # Set the pool in event_db module
         #Error handling Missing #TODO^
 
         await self.load_cogs() #load cogs after commands and events
@@ -124,7 +135,7 @@ class ReamannBot(commands.Bot):
     # Moduels Laden
     async def load_cogs(self):
         await self.load_extension("modules.BototVoice.src.commands.MusicCog")
-        await self.load_extension("modules.EventBot.src.commands.event.eventcreate")
+        # await self.load_extension("modules.EventBot.src.commands.event.eventcreate")
         # await self.load_extension("modules.EventBot.src.events.on_ready")
     
 intents = discord.Intents.all()

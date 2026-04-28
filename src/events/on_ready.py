@@ -27,6 +27,13 @@ class OnReadyCog(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.tree.sync()
+        await self.bot.change_presence(
+          status=discord.Status.idle,  # Abwesend
+          activity=discord.Activity(
+            type=discord.ActivityType.watching,  # oder watching/listening/playing
+            name="Partially Operational"
+        )
+    )
 
         self.bot.add_view(TicketView())  # Register the dropdown selection
         self.bot.add_view(PersistentTicketView())  ## Register the Buttons
