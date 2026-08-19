@@ -29,7 +29,7 @@ if SRC_PATH not in sys.path:
 import utils.db as db
 import utils.ticket_db as ticket_db
 import utils.selfrole_db as selfrole_db
-# import modules.EventBot.src.utils.event_db as event_db
+import modules.EventBot.src.utils.event_db as event_db
 
 # Import EventBot reminder cog
 # from modules.EventBot.src.events.on_ready import ReminderCog
@@ -95,7 +95,7 @@ class ReamannBot(commands.Bot):
         self.pool : aiomysql.Pool = await db.init_db_pool() #append pool to bot Objekt
         ticket_db.pool = self.pool  # Set the pool in ticket_db module
         selfrole_db.pool = self.pool  # Set the pool in selfrole_db module
-        # event_db.pool = self.pool  # Set the pool in event_db module
+        event_db.pool = self.pool  # Set the pool in event_db module
         #Error handling Missing #TODO^
 
         await self.load_cogs() #load cogs after commands and events
