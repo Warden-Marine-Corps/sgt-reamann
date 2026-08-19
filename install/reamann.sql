@@ -25,14 +25,49 @@ CREATE TABLE BotCommands(
 CREATE TABLE Param(
 	param_number INT,
 	command_id INT,
-	param_name VARCHAR(2048),
+	param_name VARCHAR(2048) NOT NULL,
 	param_desc VARCHAR(2048),
-	param_type VARCHAR(64),
-	is_optional BOOL,
+	param_type VARCHAR(64) NOT NULL,
+	`required` BOOL,
 	`default` VARCHAR(2048),
 	CONSTRAINT PK_Param PRIMARY KEY(param_number, command_id),
 	CONSTRAINT FK_Param_command_id FOREIGN KEY (command_id)
         REFERENCES BotCommands(command_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+
+);
+
+CREATE TABLE ParticipantType(
+	participant_type_id INT AUTO_INCREMENT,
+	type_name VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
+	guild_id BIGINT(11), -- NULL if global
+	emoji VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
+	CONSTRAINT PK_ParticipantType PRIMARY KEY(participant_type_id)
+
+);
+
+CREATE TABLE Template(
+	template_id INT AUTO_INCREMENT,
+	template_name VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
+	guild_id BIGINT(11), -- NULL if global
+	CONSTRAINT PK_Template PRIMARY KEY(template_id)
+
+
+);
+CREATE TABLE TemplateParticipantType(
+   template_participant_type_id INT AUTO_INCREMENT,
+	participant_type INT NOT NULL,
+   template_id INT NOT NULL,
+	CONSTRAINT PK_TemplateParticipantType PRIMARY KEY(template_participant_type_id),
+
+    CONSTRAINT FK_participant_type FOREIGN KEY (participant_type)
+        REFERENCES ParticipantType(participant_type_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT FK_template FOREIGN KEY (template_id)
+        REFERENCES Template(template_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 
@@ -51,7 +86,10 @@ CREATE TABLE `Event`(
 	role_id BIGINT(11),
 	message_id BIGINT(11),
 	creator_id BIGINT(11),
-	CONSTRAINT PK_Event PRIMARY KEY(event_id)
+    template_id INT,
+	CONSTRAINT PK_Event PRIMARY KEY(event_id),
+    CONSTRAINT FK_Template_template_id FOREIGN KEY (template_id)
+        REFERENCES Template(template_id)
 );
 
 CREATE TABLE Participant(
@@ -62,6 +100,10 @@ CREATE TABLE Participant(
 	CONSTRAINT PK_Participant PRIMARY KEY(participant_id),
 	CONSTRAINT FK_Participant_event_id FOREIGN KEY (event_id)
         REFERENCES `Event`(event_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT FK_ParticipantType_participant_type FOREIGN KEY (participant_type)
+        REFERENCES ParticipantType(participant_type_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -97,30 +139,18 @@ CREATE TABLE SelfRoleRole(
         ON UPDATE CASCADE
 );
 
-CREATE TABLE MultiEvent(
-	multi_event_id INT,
-	event_id INT,
-	guild_id BIGINT(11),
-	message_id BIGINT(11),
-	CONSTRAINT PK_MultiEvent PRIMARY KEY(multi_event_id),
-	CONSTRAINT FK_multi_event_id FOREIGN KEY (event_id)
-        REFERENCES `Event`(event_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
-CREATE TABLE ParticipantType(
-	participant_type_id INT AUTO_INCREMENT,
-	type_name VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
-	event_id INT, -- NULL if global
-	emoji VARCHAR(64) CHARACTER SET utf8mb4 NOT NULL,
-	CONSTRAINT PK_ParticipantType PRIMARY KEY(participant_type_id),
-	CONSTRAINT FK_ParticipantType_event_id FOREIGN KEY (event_id)
-        REFERENCES `Event`(event_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
-INSERT INTO ParticipantType (participant_type_id, type_name, event_id, emoji) VALUES
+INSERT INTO ParticipantType (participant_type_id, type_name, guild_id, emoji) VALUES
 (1, 'Participants', NULL, '✅'),
-(2, 'Tentative', NULL, '❔');
+(2, 'Tentative', NULL, '❔'),
+(3, 'Remove', NULL, ''),
+(4, 'Declined', NULL, '❌');
+
+INSERT INTO Template Values(1, 'Default', Null);
+INSERT INTO Template Values(2, 'Normal', Null);
+
+INSERT INTO TemplateParticipantType (template_participant_type_id, template_id, participant_type) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 4),
+(4, 2, 1),
+(4, 2, 3);

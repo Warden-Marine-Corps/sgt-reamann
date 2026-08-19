@@ -143,7 +143,7 @@ class ReamannBot(commands.Bot):
     # Moduels Laden
     async def load_cogs(self):
         await self.load_extension("modules.BototVoice.src.commands.MusicCog")
-        # await self.load_extension("modules.EventBot.src.commands.event.eventcreate")
+        await self.load_extension("modules.EventBot.src.commands.event.eventcreate")
         # await self.load_extension("modules.EventBot.src.events.on_ready")
     
 intents = discord.Intents.all()

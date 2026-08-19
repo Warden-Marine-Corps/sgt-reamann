@@ -6,4 +6,4 @@ ollama
 requests
 PyNaCl
 yt_dlp
-youtubesearchpython
+youtube-search-python
