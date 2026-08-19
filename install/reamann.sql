@@ -84,9 +84,9 @@ CREATE TABLE `Event`(
 	guild_id BIGINT(11) NOT NULL,
 	channel_id BIGINT(11) NOT NULL,
 	role_id BIGINT(11),
-	message_id BIGINT(11),
-	creator_id BIGINT(11),
-    template_id INT,
+	message_id BIGINT(11) NOT NULL,
+	creator_id BIGINT(11) NOT NULL,
+   template_id INT NOT NULL,
 	CONSTRAINT PK_Event PRIMARY KEY(event_id),
     CONSTRAINT FK_Template_template_id FOREIGN KEY (template_id)
         REFERENCES Template(template_id)
@@ -153,4 +153,4 @@ INSERT INTO TemplateParticipantType (template_participant_type_id, template_id, 
 (2, 1, 2),
 (3, 1, 4),
 (4, 2, 1),
-(4, 2, 3);
+(5, 2, 3);
